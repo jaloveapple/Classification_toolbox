@@ -92,12 +92,12 @@ case 'Start'
     %Do some error checking
     if evalin('base', '~exist(''targets'')')    
         set(hm,'String','No targets on workspace. Please load targets.')   
-        break
+        return
     end
     
     if evalin('base', '~exist(''features'')')    
         set(hm,'String','No features on workspace. Please load features.')
-        break
+        return
     end 
 
     features                = evalin('base','features');
@@ -114,15 +114,15 @@ case 'Start'
     redraws = str2num(get(h, 'String'));   
     if isempty(redraws), 
         set(hm,'String','Please select how many redraws are needed.')      
-        break
+        return
     else     
         if (redraws < 1), 
             set(hm,'String','Number of redraws must be larger than 0.')     
-            break    
+            return    
         else
             if (strcmp(error_method, 'Cross-Validation') & (redraws == 1)),
                 set(hm,'String','Number of redraws must be larger than 1.')     
-                break    
+                return    
             end        
         end   
     end      
@@ -132,19 +132,19 @@ case 'Start'
     if strcmp(error_method, 'Holdout'),
         if isempty(percent), 
             set(hm,'String','Please select the percentage of training vectors.')     
-            break
+            return
         else     
             if (floor(percent/100*length(targets)) < 1),     
                 set(hm,'String','Number of training vectors must be larger than 0.')     
-                break    
+                return    
             end   
             if (percent >= 100),     
                 set(hm,'String','Number of training vectors must be smaller than 100%.')     
-                break    
+                return    
             end   
             if (floor((1-percent/100)*length(targets)) < 1),     
                 set(hm,'String','Number of test vectors must be larger than 0.')     
-                break    
+                return    
             end   
         end
     end      
@@ -464,9 +464,9 @@ case 'Params'
         m1 = mean(features(:,train_one)'');
         c1 = cov(features(:,train_one)'',1);
         
-        Chernoff = Chernoff(mean(features(:,train_zero)'), cov(features(:,train_zero)',1), mean(features(:,train_one)'), cov(features(:,train_one)',1),length(train_one)/length(targets));
-        Bhattacharyya = Bhattacharyya(mean(features(:,train_zero)'), cov(features(:,train_zero)',1), mean(features(:,train_one)'), cov(features(:,train_one)',1),length(train_one)/length(targets));
-        Discriminability = Discriminability(mean(features(:,train_zero)'), cov(features(:,train_zero)',1), mean(features(:,train_one)'), cov(features(:,train_one)',1),length(train_one)/length(targets));
+        Chernoff_ = Chernoff(mean(features(:,train_zero)'), cov(features(:,train_zero)',1), mean(features(:,train_one)'), cov(features(:,train_one)',1),length(train_one)/length(targets));
+        Bhattacharyya_ = Bhattacharyya(mean(features(:,train_zero)'), cov(features(:,train_zero)',1), mean(features(:,train_one)'), cov(features(:,train_one)',1),length(train_one)/length(targets));
+        Discriminability_ = Discriminability(mean(features(:,train_zero)'), cov(features(:,train_zero)',1), mean(features(:,train_one)'), cov(features(:,train_one)',1),length(train_one)/length(targets));
         
         h0 = GaussianParameters;
         set(findobj(h0,'Tag','txtMean00'),'String',num2str(m0(1),3))
@@ -483,9 +483,9 @@ case 'Params'
         set(findobj(h0,'Tag','txtCov110'),'String',num2str(c1(2,1),3))
         set(findobj(h0,'Tag','txtCov111'),'String',num2str(c1(2,2),3))
         
-        set(findobj(h0,'Tag','txtBound1'),'String',['The Bhattacharyya bound value is: ' num2str(Bhattacharyya,3)])
-        set(findobj(h0,'Tag','txtBound2'),'String',['The Chernoff bound value is: ' num2str(Chernoff,3)])
-        set(findobj(h0,'Tag','txtDiscriminability'),'String',['The discriminability value is: ' num2str(Discriminability,3)])
+        set(findobj(h0,'Tag','txtBound1'),'String',['The Bhattacharyya bound value is: ' num2str(Bhattacharyya_,3)])
+        set(findobj(h0,'Tag','txtBound2'),'String',['The Chernoff bound value is: ' num2str(Chernoff_,3)])
+        set(findobj(h0,'Tag','txtDiscriminability'),'String',['The discriminability value is: ' num2str(Discriminability_,3)])
         
         waitfor(h0)
     end
