@@ -625,7 +625,7 @@ case 'HelpClassifier'
     evalin('base', ['help ' Algorithms(chosen).Name ])
     
 case 'About'
-    im = imread('about','bmp');
+    im = imread('about_cn','bmp');
     plot(0,0)
     h  = image(im);
 end

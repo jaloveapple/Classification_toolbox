@@ -20,7 +20,7 @@ case {'MoveLeft','MoveRight'}
    
    algorithm	  = algorithms(val,:);
    if (isempty(deblank(algorithm)))
-      break
+      return
    end
    
    newlist 		  = 1:size(algorithms,1);
@@ -57,12 +57,12 @@ case {'Compare', 'Predict'}
    %Do some error checking
    if evalin('base', '~exist(''targets'')')    
       set(hm,'String','No targets on workspace. Please load targets.')   
-      break
+      return
    end
    
    if evalin('base', '~exist(''features'')')    
       set(hm,'String','No features on workspace. Please load features.')
-      break
+      return
    end 
    
    features                = evalin('base','features');
@@ -80,7 +80,7 @@ case {'Compare', 'Predict'}
    
    if ((isempty(deblank(algorithms(1,:)))) & (size(algorithms,1) == 1))
       set(hm,'String','Please select at least one algorithm.')     
-      break   
+      return   
    end
    Nalgorithms = size(algorithms,1);
    
@@ -108,17 +108,17 @@ case {'Compare', 'Predict'}
       redraws = str2num(get(h, 'String'));   
       if isempty(redraws), 
          set(hm,'String','Please select how many redraws are needed.')      
-         break
+         return
       else     
          if strcmp(error_method, 'Cross-Validation'),
             if (redraws < 2),
                set(hm, 'String', 'Number of redraws must be larger than 1.')
-               break
+               return
             end
          else
             if (redraws < 1), 
                set(hm,'String','Number of redraws must be larger than 0.')     
-               break    
+               return    
             end
          end   
       end      
@@ -128,11 +128,11 @@ case {'Compare', 'Predict'}
       if strcmp(error_method, 'Holdout'),
          if isempty(percent), 
             set(hm,'String','Please select the percentage of training vectors.')     
-            break
+            return
          else     
             if (floor(percent/100*length(targets)) < 1),     
                set(hm,'String','Number training vectors must be larger than 0.')     
-               break    
+               return    
             end   
          end
       end              

@@ -59,7 +59,7 @@ targets = zeros(1, size(features,2));
 if (tree.dim == 0)
    %Reached the end of the tree
    targets(indices) = tree.child;
-   break
+   return
 end
         
 %This is not the last level of the tree, so:
@@ -95,7 +95,7 @@ tree.dim						= 0;
 tree.split_loc				= inf;
 
 if isempty(features),
-   break
+   return
 end
 
 %When to stop: If the dimension is one or the number of examples is small
@@ -103,7 +103,7 @@ if ((inc_node > L) | (L == 1) | (length(Uc) == 1)),
    H					= hist(targets, length(Uc));
    [m, largest] 	= max(H);
    tree.child	 	= Uc(largest);
-   break
+   return
 end
 
 %Compute the node's I
